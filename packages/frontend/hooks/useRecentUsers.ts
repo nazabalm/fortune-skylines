@@ -72,12 +72,8 @@ export function useRecentUsers(limit: number = 10) {
         // Use parseAbiItem to create the event filter
         const joinedEventAbi = parseAbiItem('event Joined(address indexed user, address indexed referrer)')
         
-        // Query in batches to avoid RPC limits
-        const BATCH_SIZE = 5000n  // Query 5000 blocks at a time
-        let allLogs: typeof logs = []
-        
-        // Try to get events from a reasonable range
-        const fromBlock = blockNumber > 50000n ? blockNumber - 50000n : 0n
+        // Try to get events from a broad range (last 100k blocks)
+        const fromBlock = blockNumber > 100000n ? blockNumber - 100000n : 0n
         console.log('[RecentUsers] Querying blocks:', fromBlock, 'to', blockNumber)
         
         const logs = await publicClient.getLogs({
