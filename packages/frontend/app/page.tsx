@@ -125,10 +125,10 @@ function PrizePoolDisplay() {
   const { prizePool, totalUsers } = useContractData()
   
   return (
-    <Card className="border border-indigo-500/20 bg-gradient-to-br from-slate-900/50 to-indigo-950/30 backdrop-blur-sm shadow-2xl shadow-indigo-500/10">
+    <Card className="border border-indigo-500/20 bg-gradient-to-br from-slate-900/50 to-indigo-950/30 backdrop-blur-sm shadow-2xl shadow-indigo-500/10 card-hover">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400 flex-shrink-0" />
+          <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400 flex-shrink-0 animate-float" />
           <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Prize Pool</CardTitle>
         </div>
       </CardHeader>

@@ -1,0 +1,29 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="trophyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="baseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A78BFA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#818CF8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="url(#baseGradient)" opacity="0.3"/>
+  
+  <!-- Trophy body -->
+  <path d="M28 18 L32 16 L36 18 L36 24 C36 26 38 28 40 28 L40 32 C40 38 35 42 32 42 C29 42 24 38 24 32 L24 28 C26 28 28 26 28 24 Z" fill="url(#trophyGradient)"/>
+  
+  <!-- Trophy base -->
+  <rect x="20" y="42" width="24" height="6" rx="2" fill="url(#trophyGradient)"/>
+  
+  <!-- Star on trophy -->
+  <path d="M32 26 L32.8 28.6 L35.4 28.6 L33.3 30.2 L34.1 32.8 L32 31.2 L29.9 32.8 L30.7 30.2 L28.6 28.6 L31.2 28.6 Z" fill="#FCD34D"/>
+  
+  <!-- Dollar sign -->
+  <path d="M32 36 Q32 36 32 38 Q32 40 30.5 40 Q32 40 32 42 M28 36 L36 36 M28 42 L36 42" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+</svg>
+
