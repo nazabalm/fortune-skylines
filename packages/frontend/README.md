@@ -94,7 +94,7 @@ Contract addresses are configured in `lib/contracts.ts` and can be overridden vi
 ### Referral System
 - Auto-detect referrer from URL query parameter (`?ref=0x...`)
 - Generate shareable referral links
-- Track daily referral counts (20/day limit)
+- Track daily referral counts
 - Display referral rewards earned
 
 ### Join Flow

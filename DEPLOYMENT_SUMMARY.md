@@ -158,7 +158,7 @@ RefBoom/
 - Generate shareable links
 - Copy-to-clipboard functionality
 - Display after successful join
-- Track daily referral count (20/day limit)
+- Track daily referral count
 
 ### 4. Winner Announcement
 - Auto-detect when winner is selected

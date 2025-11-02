@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useContractData } from '@/hooks/useContractData'
 import { useUserStatus } from '@/hooks/useUserStatus'
 import { useJoinLottery } from '@/hooks/useJoinLottery'
-import { Trophy, Users, TrendingUp, Gift, Copy, CheckCircle2, Loader2, Clock } from 'lucide-react'
+import { Trophy, Users, TrendingUp, Gift, Copy, CheckCircle2, Loader2, Clock, ExternalLink, Twitter } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -18,7 +18,9 @@ import { formatEther, formatUnits, parseUnits } from 'viem'
 import { WinnerAnnouncement } from '@/components/WinnerAnnouncement'
 import { RecentUsers } from '@/components/RecentUsers'
 import { MyReferrals } from '@/components/MyReferrals'
-import { useChainId, useAccount } from 'wagmi'
+import { useChainId, useAccount, useReadContract } from 'wagmi'
+import { getContractAddress, REFBOOM_ABI } from '@/lib/contracts'
+import { formatAddress } from '@/lib/utils'
 
 function AnimatedCounter({ value, decimals = 2 }: { value: number; decimals?: number }) {
   const [displayValue, setDisplayValue] = useState(0)
@@ -378,7 +380,7 @@ function HowItWorks() {
             <div>
               <h4 className="font-semibold">Refer Friends</h4>
               <p className="text-sm text-muted-foreground">
-                Get 50 USDC per successful referral (max 20/day)
+                Get 50 USDC per successful referral
               </p>
             </div>
           </div>
@@ -404,6 +406,129 @@ function HowItWorks() {
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+function ContractVerification() {
+  const chainId = useChainId()
+  const contractAddresses = getContractAddress(chainId)
+  const [copied, setCopied] = useState(false)
+  
+  const { data: entryFee } = useReadContract({
+    address: contractAddresses.refBoom,
+    abi: REFBOOM_ABI,
+    functionName: 'ENTRY_FEE',
+    query: {
+      enabled: !!contractAddresses.refBoom && contractAddresses.refBoom !== '0x0000000000000000000000000000000000000000',
+    },
+  })
+
+  const { data: referralReward } = useReadContract({
+    address: contractAddresses.refBoom,
+    abi: REFBOOM_ABI,
+    functionName: 'REFERRAL_REWARD',
+    query: {
+      enabled: !!contractAddresses.refBoom && contractAddresses.refBoom !== '0x0000000000000000000000000000000000000000',
+    },
+  })
+
+  const getExplorerUrl = () => {
+    if (chainId === 8453) {
+      return `https://basescan.org/address/${contractAddresses.refBoom}`
+    }
+    return `https://sepolia.basescan.org/address/${contractAddresses.refBoom}`
+  }
+
+  if (contractAddresses.refBoom === '0x0000000000000000000000000000000000000000') {
+    return null
+  }
+
+  return (
+    <Card className="border-indigo-500/20 bg-indigo-950/10">
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <CheckCircle2 className="h-5 w-5 text-green-500" />
+          <CardTitle className="text-sm">Smart Contract Verified</CardTitle>
+        </div>
+        <CardDescription className="text-xs">
+          All data is fetched directly from the on-chain contract
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div>
+          <label className="text-xs text-muted-foreground">Contract Address</label>
+          <div className="flex items-center gap-2 mt-1">
+            <code className="text-xs font-mono bg-muted px-2 py-1 rounded flex-1">
+              {formatAddress(contractAddresses.refBoom)}
+            </code>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7"
+              onClick={() => {
+                navigator.clipboard.writeText(contractAddresses.refBoom)
+                setCopied(true)
+                toast.success('Address copied!')
+                setTimeout(() => setCopied(false), 2000)
+              }}
+            >
+              {copied ? <CheckCircle2 className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7"
+              onClick={() => window.open(getExplorerUrl(), '_blank')}
+            >
+              <ExternalLink className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
+        {entryFee && referralReward && (
+          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border/50">
+            <div>
+              <p className="text-xs text-muted-foreground">Entry Fee</p>
+              <p className="text-sm font-semibold">{formatUnits(entryFee, 6)} USDC</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Referral Reward</p>
+              <p className="text-sm font-semibold">{formatUnits(referralReward, 6)} USDC</p>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="border-t border-slate-800/50 mt-12 py-6">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-yellow-400" />
+            <span className="text-sm text-muted-foreground">FortuneSkylines</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://twitter.com/Fortune_Skylines"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Twitter className="h-4 w-4" />
+              <span>@Fortune_Skylines</span>
+            </a>
+          </div>
+        </div>
+        <div className="mt-4 text-center">
+          <p className="text-xs text-muted-foreground">
+            Powered by Chainlink VRF • Built on Base
+          </p>
+        </div>
+      </div>
+    </footer>
   )
 }
 
@@ -445,7 +570,26 @@ function LotteryContent() {
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2">
-              <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400 flex-shrink-0" />
+              <div className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0 relative">
+                <svg viewBox="0 0 64 64" className="w-full h-full">
+                  <defs>
+                    <linearGradient id="trophyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="50%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#6366F1" />
+                    </linearGradient>
+                    <linearGradient id="baseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#A78BFA" />
+                      <stop offset="100%" stopColor="#818CF8" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="32" cy="32" r="30" fill="url(#baseGradient)" opacity="0.3"/>
+                  <path d="M28 18 L32 16 L36 18 L36 24 C36 26 38 28 40 28 L40 32 C40 38 35 42 32 42 C29 42 24 38 24 32 L24 28 C26 28 28 26 28 24 Z" fill="url(#trophyGradient)"/>
+                  <rect x="20" y="42" width="24" height="6" rx="2" fill="url(#trophyGradient)"/>
+                  <path d="M32 26 L32.8 28.6 L35.4 28.6 L33.3 30.2 L34.1 32.8 L32 31.2 L29.9 32.8 L30.7 30.2 L28.6 28.6 L31.2 28.6 Z" fill="#FCD34D"/>
+                  <path d="M32 36 Q32 36 32 38 Q32 40 30.5 40 Q32 40 32 42 M28 36 L36 36 M28 42 L36 42" stroke="#10B981" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </div>
               <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent whitespace-nowrap">
                 FortuneSkylines
               </h1>
@@ -472,12 +616,16 @@ function LotteryContent() {
 
           {/* Right Column */}
           <div className="space-y-6">
+            <ContractVerification />
             <StatsGrid />
             <MyReferrals />
             <RecentUsers />
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

@@ -5,7 +5,7 @@ A decentralized lottery dApp built on Base blockchain with referral rewards.
 ## 🌟 Features
 
 - 🎰 **Lottery System**: 1000 user target, winner selected via Chainlink VRF
-- 🔗 **Referral Program**: Earn 50% of entry fee per referral (max 20/day)
+- 🔗 **Referral Program**: Earn 50% of entry fee per referral
 - 💰 **USDC Payments**: Seamless integration with Circle USDC
 - 🎨 **Beautiful UI**: Modern gradient design with animations
 - 📱 **Responsive**: Mobile-first design
@@ -89,7 +89,7 @@ Open http://localhost:3000 🎉
 
 1. **Join**: Pay 0.001 USDC entry fee
 2. **Refer**: Share your unique referral link
-3. **Earn**: Get 0.0005 USDC per successful referral (max 20/day)
+3. **Earn**: Get 0.0005 USDC per successful referral
 4. **Win**: When we hit 1000 users, one winner takes the entire prize pool!
 
 ### Prize Distribution
