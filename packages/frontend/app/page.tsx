@@ -18,7 +18,7 @@ import { formatEther } from 'viem'
 import { WinnerAnnouncement } from '@/components/WinnerAnnouncement'
 import { RecentUsers } from '@/components/RecentUsers'
 import { MyReferrals } from '@/components/MyReferrals'
-import { useChainId } from 'wagmi'
+import { useChainId, useAccount } from 'wagmi'
 
 function AnimatedCounter({ value, decimals = 2 }: { value: number; decimals?: number }) {
   const [displayValue, setDisplayValue] = useState(0)
@@ -258,7 +258,7 @@ function StatsGrid() {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
                   <div className="text-3xl font-bold mt-2">
-                    {address ? stat.value : <Skeleton className="h-8 w-16" />}
+                    {stat.title === 'Total Participants' ? stat.value : (address ? stat.value : <Skeleton className="h-8 w-16" />)}
                   </div>
                 </div>
                 <Icon className={`h-8 w-8 ${stat.color}`} />
@@ -327,9 +327,11 @@ function HowItWorks() {
 function LotteryContent() {
   const chainId = useChainId()
   const supportedChains = [84532, 8453] // Base Sepolia, Base Mainnet
+  const { isConnected } = useAccount()
   const isSupportedChain = supportedChains.includes(chainId)
 
-  if (!isSupportedChain) {
+  // Show unsupported network message only if wallet is connected
+  if (isConnected && !isSupportedChain) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-purple-950 dark:via-black dark:to-blue-950 flex items-center justify-center">
         <Card className="max-w-md border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/20">
