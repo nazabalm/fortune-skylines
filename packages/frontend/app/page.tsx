@@ -17,6 +17,7 @@ import { toast } from 'react-hot-toast'
 import { formatEther } from 'viem'
 import { WinnerAnnouncement } from '@/components/WinnerAnnouncement'
 import { RecentUsers } from '@/components/RecentUsers'
+import { MyReferrals } from '@/components/MyReferrals'
 import { useChainId } from 'wagmi'
 
 function AnimatedCounter({ value, decimals = 2 }: { value: number; decimals?: number }) {
@@ -384,6 +385,7 @@ function LotteryContent() {
           {/* Right Column */}
           <div className="space-y-6">
             <StatsGrid />
+            <MyReferrals />
             <RecentUsers />
           </div>
         </div>
