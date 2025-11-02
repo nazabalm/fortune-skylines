@@ -37,10 +37,14 @@ export function useWinnerEvent() {
         console.log('[useWinnerEvent] Fetching logs from:', contractAddresses.refBoom)
         
         // Get the most recent WinnerSelected event using the ABI
+        // Fetch from last 100k blocks to avoid range limit
+        const latestBlock = await publicClient.getBlockNumber()
+        const fromBlock = latestBlock > 100000n ? latestBlock - 100000n : 0n
+        
         const logs = await publicClient.getLogs({
           address: contractAddresses.refBoom,
           event: parseAbiItem('event WinnerSelected(address indexed winner, uint256 amount)'),
-          fromBlock: 0n,
+          fromBlock,
           toBlock: 'latest',
         })
 
