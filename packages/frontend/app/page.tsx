@@ -91,31 +91,31 @@ function CountdownTimer() {
   return (
     <div className="flex items-center gap-4">
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {timeLeft.days}
         </div>
-        <div className="text-xs text-muted-foreground uppercase">Days</div>
+        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Days</div>
       </div>
-      <div className="text-3xl text-purple-600">:</div>
+      <div className="text-3xl text-indigo-400">:</div>
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {String(timeLeft.hours).padStart(2, '0')}
         </div>
-        <div className="text-xs text-muted-foreground uppercase">Hours</div>
+        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Hours</div>
       </div>
-      <div className="text-3xl text-purple-600">:</div>
+      <div className="text-3xl text-indigo-400">:</div>
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {String(timeLeft.minutes).padStart(2, '0')}
         </div>
-        <div className="text-xs text-muted-foreground uppercase">Minutes</div>
+        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Minutes</div>
       </div>
-      <div className="text-3xl text-purple-600">:</div>
+      <div className="text-3xl text-indigo-400">:</div>
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {String(timeLeft.seconds).padStart(2, '0')}
         </div>
-        <div className="text-xs text-muted-foreground uppercase">Seconds</div>
+        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Seconds</div>
       </div>
     </div>
   )
@@ -125,21 +125,21 @@ function PrizePoolDisplay() {
   const { prizePool, totalUsers } = useContractData()
   
   return (
-    <Card className="border-2 border-gradient bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
+    <Card className="border border-indigo-500/20 bg-gradient-to-br from-slate-900/50 to-indigo-950/30 backdrop-blur-sm shadow-2xl shadow-indigo-500/10">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Trophy className="h-8 w-8 text-yellow-500" />
-          <CardTitle className="text-3xl font-bold">Prize Pool</CardTitle>
+          <Trophy className="h-8 w-8 text-yellow-400" />
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Prize Pool</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <div className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           $<AnimatedCounter value={Number(prizePool)} />
         </div>
         <div className="space-y-3">
           <div className="flex items-center gap-2 mb-2">
-            <Clock className="h-5 w-5 text-purple-600" />
-            <span className="text-sm font-medium">Winner Selection: January 1st</span>
+            <Clock className="h-5 w-5 text-indigo-400" />
+            <span className="text-sm font-medium text-indigo-300">Winner Selection: January 1st</span>
           </div>
           <CountdownTimer />
         </div>
@@ -402,8 +402,8 @@ function LotteryContent() {
   // Show unsupported network message only if wallet is connected
   if (isConnected && !isSupportedChain) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-purple-950 dark:via-black dark:to-blue-950 flex items-center justify-center">
-        <Card className="max-w-md border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/20">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 flex items-center justify-center">
+        <Card className="max-w-md border-red-500/20 bg-red-950/10 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-red-800 dark:text-red-200">⚠️ Unsupported Network</CardTitle>
             <CardDescription className="text-red-700 dark:text-red-300">
@@ -426,13 +426,13 @@ function LotteryContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-purple-950 dark:via-black dark:to-blue-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
       {/* Header */}
-      <header className="border-b bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Trophy className="h-8 w-8 text-yellow-500" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <Trophy className="h-8 w-8 text-yellow-400" />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
               FortuneSkylines
             </h1>
           </div>
