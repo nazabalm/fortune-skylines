@@ -15,19 +15,13 @@ import { useReadContract, useWriteContract, useWaitForTransactionReceipt, useCha
 import { toast } from 'react-hot-toast'
 import { formatUnits } from 'viem'
 
-// Admin wallet address - UPDATE THIS!
-const ADMIN_ADDRESS = process.env.NEXT_PUBLIC_ADMIN_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000'
-
 function AdminContent() {
   const { address, isConnected } = useAccount()
   const chainId = useChainId()
   const contractAddresses = getContractAddress(chainId)
   const isDeployed = isContractDeployed(contractAddresses.refBoom)
   
-  // Check if current user is admin
-  const isAdmin = address?.toLowerCase() === ADMIN_ADDRESS.toLowerCase()
-  
-  // Read contract owner
+  // Read contract owner - this is the REAL admin
   const { data: owner } = useReadContract({
     address: contractAddresses.refBoom,
     abi: REFBOOM_ABI,
@@ -36,6 +30,9 @@ function AdminContent() {
       enabled: isDeployed && isConnected,
     },
   })
+  
+  // Check if current user is admin (owner of the contract)
+  const isAdmin = owner && address?.toLowerCase() === owner.toLowerCase()
   
   // Contract state
   const { prizePool, totalUsers, winnerSelected, winner, prizeAmount } = useContractData()
@@ -156,8 +153,8 @@ function AdminContent() {
                 <code className="text-xs text-foreground break-all">{address}</code>
               </div>
               <div className="p-4 bg-slate-900/50 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Admin address:</p>
-                <code className="text-xs text-foreground break-all">{ADMIN_ADDRESS}</code>
+                <p className="text-sm text-muted-foreground mb-2">Contract Owner (Admin):</p>
+                <code className="text-xs text-foreground break-all">{owner || 'Loading...'}</code>
               </div>
             </CardContent>
           </Card>
@@ -279,9 +276,9 @@ function AdminContent() {
                 <div className="p-3 bg-green-950/20 rounded-lg">
                   <p className="text-xs text-muted-foreground mb-1">Winner Address:</p>
                   <code className="text-sm text-green-400 break-all">{winner}</code>
-                  {prizeAmount > 0 && (
+                  {prizeAmount && (
                     <p className="text-xs text-green-400 mt-2">
-                      Prize: ${formatUnits(prizeAmount, 6)} USDC
+                      Prize: ${prizeAmount} USDC
                     </p>
                   )}
                 </div>
@@ -361,7 +358,7 @@ function AdminContent() {
             </div>
 
             {/* Complete Payment Button */}
-            {(winnerSelected && prizeAmount > 0n) && (
+            {(winnerSelected && prizeAmount) && (
               <div className="p-4 bg-yellow-950/20 rounded-lg border border-yellow-500/20">
                 <h4 className="font-semibold mb-2 text-yellow-400">Complete Winner Payment</h4>
                 <p className="text-sm text-muted-foreground mb-4">
