@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useContractData } from '@/hooks/useContractData'
 import { useUserStatus } from '@/hooks/useUserStatus'
 import { useJoinLottery } from '@/hooks/useJoinLottery'
-import { Trophy, Users, TrendingUp, Gift, Copy, CheckCircle2, Loader2 } from 'lucide-react'
+import { Trophy, Users, TrendingUp, Gift, Copy, CheckCircle2, Loader2, Clock } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -47,8 +47,82 @@ function AnimatedCounter({ value, decimals = 2 }: { value: number; decimals?: nu
   return <span>{displayValue.toFixed(decimals)}</span>
 }
 
+function CountdownTimer() {
+  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null)
+  
+  useEffect(() => {
+    // Target: January 1st of next year (adjust year as needed)
+    const getTargetDate = () => {
+      const now = new Date()
+      const currentYear = now.getFullYear()
+      const targetYear = now.getMonth() === 11 && now.getDate() > 1 ? currentYear + 1 : currentYear + 1
+      return new Date(`${targetYear}-01-01T00:00:00Z`)
+    }
+    
+    const target = getTargetDate()
+    
+    const updateTimer = () => {
+      const now = new Date()
+      const diff = target.getTime() - now.getTime()
+      
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+        return
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+      
+      setTimeLeft({ days, hours, minutes, seconds })
+    }
+    
+    updateTimer()
+    const interval = setInterval(updateTimer, 1000)
+    
+    return () => clearInterval(interval)
+  }, [])
+  
+  if (!timeLeft) {
+    return <div className="text-2xl font-bold">Loading...</div>
+  }
+  
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex flex-col items-center">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          {timeLeft.days}
+        </div>
+        <div className="text-xs text-muted-foreground uppercase">Days</div>
+      </div>
+      <div className="text-3xl text-purple-600">:</div>
+      <div className="flex flex-col items-center">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          {String(timeLeft.hours).padStart(2, '0')}
+        </div>
+        <div className="text-xs text-muted-foreground uppercase">Hours</div>
+      </div>
+      <div className="text-3xl text-purple-600">:</div>
+      <div className="flex flex-col items-center">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          {String(timeLeft.minutes).padStart(2, '0')}
+        </div>
+        <div className="text-xs text-muted-foreground uppercase">Minutes</div>
+      </div>
+      <div className="text-3xl text-purple-600">:</div>
+      <div className="flex flex-col items-center">
+        <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          {String(timeLeft.seconds).padStart(2, '0')}
+        </div>
+        <div className="text-xs text-muted-foreground uppercase">Seconds</div>
+      </div>
+    </div>
+  )
+}
+
 function PrizePoolDisplay() {
-  const { prizePool, progress, totalUsers } = useContractData()
+  const { prizePool, totalUsers } = useContractData()
   
   return (
     <Card className="border-2 border-gradient bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
@@ -58,21 +132,16 @@ function PrizePoolDisplay() {
           <CardTitle className="text-3xl font-bold">Prize Pool</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
           $<AnimatedCounter value={Number(prizePool)} />
         </div>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm font-medium">
-            <span>Progress to Winner Selection</span>
-            <span className="text-purple-600">{totalUsers} / 1000</span>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="h-5 w-5 text-purple-600" />
+            <span className="text-sm font-medium">Winner Selection: January 1st</span>
           </div>
-          <div className="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-purple-600 to-blue-600 transition-all duration-500"
-              style={{ width: `${Math.min(progress, 100)}%` }}
-            />
-          </div>
+          <CountdownTimer />
         </div>
       </CardContent>
     </Card>
@@ -306,7 +375,7 @@ function HowItWorks() {
             <div>
               <h4 className="font-semibold">Win Big</h4>
               <p className="text-sm text-muted-foreground">
-                When we hit 1000 participants, a winner is selected at random from the prize pool
+                On January 1st, a winner is selected at random from all participants and wins the entire prize pool
               </p>
             </div>
           </div>
