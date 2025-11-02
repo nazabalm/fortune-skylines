@@ -3,7 +3,7 @@
 import { usePublicClient, useChainId } from 'wagmi'
 import { useEffect, useState } from 'react'
 import { REFBOOM_ABI, getContractAddress, isContractDeployed } from '@/lib/contracts'
-import { parseEventLogs, type Address } from 'viem'
+import { parseAbiItem, type Address } from 'viem'
 
 interface WinnerEvent {
   winner: Address
@@ -32,41 +32,35 @@ export function useWinnerEvent() {
 
     const fetchWinnerEvent = async () => {
       try {
-        // Get the most recent WinnerSelected event
+        // Get the most recent WinnerSelected event using the ABI
         const logs = await publicClient.getLogs({
           address: contractAddresses.refBoom,
-          event: {
-            type: 'event',
-            name: 'WinnerSelected',
-            inputs: [
-              { indexed: true, name: 'winner', type: 'address' },
-              { indexed: false, name: 'amount', type: 'uint256' },
-            ],
-          },
-          fromBlock: 'earliest',
+          event: parseAbiItem('event WinnerSelected(address indexed winner, uint256 amount)'),
+          fromBlock: 0n,
           toBlock: 'latest',
         })
+
+        console.log('[useWinnerEvent] Found logs:', logs.length)
 
         if (logs && logs.length > 0) {
           // Get the most recent event
           const latestLog = logs[logs.length - 1]
           
-          // Get transaction receipt to find the transaction hash
-          const receipt = await publicClient.getTransactionReceipt({
-            hash: latestLog.transactionHash,
-          })
-
-          if (receipt) {
+          console.log('[useWinnerEvent] Latest log:', latestLog)
+          
+          // The transaction hash is already in the log
+          if (latestLog.transactionHash && latestLog.args.winner) {
             setWinnerEvent({
               winner: latestLog.args.winner as Address,
               amount: latestLog.args.amount as bigint,
-              transactionHash: receipt.transactionHash,
-              blockNumber: receipt.blockNumber,
+              transactionHash: latestLog.transactionHash,
+              blockNumber: latestLog.blockNumber,
             })
+            console.log('[useWinnerEvent] Set winner event with tx:', latestLog.transactionHash)
           }
         }
       } catch (error) {
-        console.error('Error fetching winner event:', error)
+        console.error('[useWinnerEvent] Error fetching winner event:', error)
       } finally {
         setIsLoading(false)
       }
