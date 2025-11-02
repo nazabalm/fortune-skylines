@@ -3,12 +3,24 @@
 import { useEffect, useState } from 'react'
 import confetti from 'canvas-confetti'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Trophy, PartyPopper } from 'lucide-react'
+import { Trophy, PartyPopper, ExternalLink } from 'lucide-react'
 import { useContractData } from '@/hooks/useContractData'
+import { useWinnerEvent } from '@/hooks/useWinnerEvent'
+import { useChainId } from 'wagmi'
+import { formatUnits } from 'viem'
 
 export function WinnerAnnouncement() {
   const { winnerSelected, winner, prizeAmount } = useContractData()
+  const { winnerEvent } = useWinnerEvent()
+  const chainId = useChainId()
   const [hasPlayed, setHasPlayed] = useState(false)
+
+  const getExplorerUrl = (txHash: string) => {
+    const explorerBase = chainId === 8453 
+      ? 'https://basescan.org' 
+      : 'https://sepolia.basescan.org'
+    return `${explorerBase}/tx/${txHash}`
+  }
 
   useEffect(() => {
     if (winnerSelected && winner && !hasPlayed) {
@@ -71,6 +83,24 @@ export function WinnerAnnouncement() {
               ${Number(prizeAmount).toFixed(2)} USDC
             </p>
           </div>
+          {winnerEvent && (
+            <div className="mt-4">
+              <p className="text-xs text-muted-foreground mb-2">Payment Transaction:</p>
+              <div className="flex items-center justify-center gap-2">
+                <code className="text-xs font-mono bg-white dark:bg-gray-900 px-2 py-1 rounded">
+                  {winnerEvent.transactionHash.slice(0, 10)}...{winnerEvent.transactionHash.slice(-8)}
+                </code>
+                <a
+                  href={getExplorerUrl(winnerEvent.transactionHash)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-yellow-600 dark:text-yellow-400 hover:underline"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
