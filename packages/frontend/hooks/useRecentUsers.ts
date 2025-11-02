@@ -3,6 +3,7 @@
 import { useWatchContractEvent, useChainId, usePublicClient } from 'wagmi'
 import { useEffect, useState } from 'react'
 import { REFBOOM_ABI, getContractAddress, isContractDeployed } from '@/lib/contracts'
+import { parseAbiItem, decodeEventLog } from 'viem'
 
 interface JoinedEvent {
   user: `0x${string}`
@@ -70,16 +71,12 @@ export function useRecentUsers(limit: number = 10) {
         const fromBlock = blockNumber > 1000n ? blockNumber - 1000n : 0n
         console.log('[RecentUsers] Querying blocks:', fromBlock, 'to', blockNumber)
 
+        // Use parseAbiItem to create the event filter
+        const joinedEventAbi = parseAbiItem('event Joined(address indexed user, address indexed referrer)')
+        
         const logs = await publicClient.getLogs({
           address: contractAddresses.refBoom,
-          event: {
-            type: 'event',
-            name: 'Joined',
-            inputs: [
-              { indexed: true, name: 'user', type: 'address' },
-              { indexed: true, name: 'referrer', type: 'address' },
-            ],
-          },
+          event: joinedEventAbi,
           fromBlock,
           toBlock: 'latest',
         })
