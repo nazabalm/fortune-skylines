@@ -57,15 +57,18 @@ export function useRecentUsers(limit: number = 10) {
   // Load historical events from the blockchain on mount
   useEffect(() => {
     if (!isDeployed || !publicClient) {
+      console.log('[RecentUsers] Skipping load - deployed:', isDeployed, 'client:', !!publicClient)
       setIsLoading(false)
       return
     }
 
     const loadHistoricalEvents = async () => {
       try {
+        console.log('[RecentUsers] Loading historical events from:', contractAddresses.refBoom)
         // Get events from the last 1000 blocks (~4 hours on Base)
         const blockNumber = await publicClient.getBlockNumber()
         const fromBlock = blockNumber > 1000n ? blockNumber - 1000n : 0n
+        console.log('[RecentUsers] Querying blocks:', fromBlock, 'to', blockNumber)
 
         const logs = await publicClient.getLogs({
           address: contractAddresses.refBoom,
@@ -80,6 +83,8 @@ export function useRecentUsers(limit: number = 10) {
           fromBlock,
           toBlock: 'latest',
         })
+
+        console.log('[RecentUsers] Found', logs.length, 'Joined events')
 
         // Transform logs to events with timestamps
         const events: JoinedEvent[] = await Promise.all(
@@ -100,10 +105,11 @@ export function useRecentUsers(limit: number = 10) {
           .sort((a, b) => Number((b.blockNumber || 0n) - (a.blockNumber || 0n)))
           .slice(0, limit)
 
+        console.log('[RecentUsers] Setting', sortedEvents.length, 'users')
         setRecentUsers(sortedEvents)
         setIsLoading(false)
       } catch (error) {
-        console.error('Failed to load historical Joined events:', error)
+        console.error('[RecentUsers] Failed to load historical Joined events:', error)
         setIsLoading(false)
       }
     }
