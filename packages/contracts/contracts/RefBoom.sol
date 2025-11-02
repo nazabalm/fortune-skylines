@@ -11,6 +11,8 @@ contract RefBoom is VRFConsumerBaseV2Plus {
     IERC20 public usdc;
 
     uint256 public constant ENTRY_FEE = 100 * 10 ** 6; // 100 USDC (6 decimals)
+    uint256 public constant GENESIS_ENTRY_FEE = 75 * 10 ** 6; // 75 USDC (25% discount for first 50 users)
+    uint256 public constant GENESIS_REFERRAL_REWARD = 25 * 10 ** 6; // 25 USDC for genesis referrer
     uint256 public constant REFERRAL_REWARD = 50 * 10 ** 6; // 50 USDC
     uint256 public constant POOL_CUT = 40 * 10 ** 6; // 40 USDC
     uint256 public constant PLATFORM_FEE = 10 * 10 ** 6; // 10 USDC
@@ -33,6 +35,9 @@ contract RefBoom is VRFConsumerBaseV2Plus {
     bool public winnerSelected = false;
     address public winner;  // Add to track the winner
     uint256 public prizeAmount;  // Add to track prize amount paid
+    
+    // Genesis referrer for first users to join
+    address public genesisReferrer;
 
     // Reentrancy guard
     bool private _locked;
@@ -53,47 +58,60 @@ contract RefBoom is VRFConsumerBaseV2Plus {
         address _usdc,
         address _vrfCoordinator,
         bytes32 _keyHash,
-        uint256 _subscriptionId
+        uint256 _subscriptionId,
+        address _genesisReferrer
     ) VRFConsumerBaseV2Plus(_vrfCoordinator) {
         usdc = IERC20(_usdc);
         keyHash = _keyHash;
         subscriptionId = _subscriptionId;
+        genesisReferrer = _genesisReferrer;
     }
 
     function join(address referrer) external nonReentrant {
-        require(
-            usdc.transferFrom(msg.sender, address(this), ENTRY_FEE),
-            "USDC transfer failed"
-        );
         require(!hasJoined[msg.sender], "Already joined");
 
         // Enforce referral requirement
-        if (totalUsers == 0) {
-            // First user can only join with owner as referrer
-            require(
-                referrer == owner(),
-                "First user must use owner as referrer"
-            );
+        bool isValidReferrer = false;
+        bool isGenesisReferrer = false;
+        
+        if (totalUsers < 50) {
+            // First 50 users can use genesis referrer
+            isGenesisReferrer = (referrer == genesisReferrer);
+            isValidReferrer = isGenesisReferrer;
         } else {
             // All subsequent users must have a valid participant as referrer
-            require(
+            isValidReferrer = (
                 referrer != address(0) &&
-                    referrer != msg.sender &&
-                    hasJoined[referrer],
-                "Valid participant referrer required"
+                referrer != msg.sender &&
+                hasJoined[referrer]
             );
         }
+        
+        require(isValidReferrer, "Valid referrer required");
+
+        // Determine entry fee based on whether using genesis referrer
+        uint256 entryFee = isGenesisReferrer ? GENESIS_ENTRY_FEE : ENTRY_FEE;
+        
+        require(
+            usdc.transferFrom(msg.sender, address(this), entryFee),
+            "USDC transfer failed"
+        );
 
         hasJoined[msg.sender] = true;
         participants.push(msg.sender);
         totalUsers++;
         prizePool += POOL_CUT;
 
-        if (
+        if (isGenesisReferrer) {
+            // Genesis referrer gets 25 USDC reward
+            usdc.transfer(genesisReferrer, GENESIS_REFERRAL_REWARD);
+            emit RewardPaid(genesisReferrer, GENESIS_REFERRAL_REWARD);
+        } else if (
             referrer != address(0) &&
             referrer != msg.sender &&
             hasJoined[referrer]
         ) {
+            // Regular referrer gets 50 USDC reward
             uint256 today = block.timestamp / 86400;
 
             usdc.transfer(referrer, REFERRAL_REWARD);
