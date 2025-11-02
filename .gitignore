@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+.next/
+**/.next/
+build/
+**/build/
+out/
+**/out/
+
+# Environment variables
+.env
+.env.local
+**/.env
+**/.env.local
+
+# Hardhat
+artifacts/
+cache/
+coverage/
+typechain-types/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Misc
+.turbo/
+.eslintcache
+
+# Deployer HTML (auto-generated)
+deployer.html
+

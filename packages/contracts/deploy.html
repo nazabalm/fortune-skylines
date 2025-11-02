@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RefBoom Deployer</title>
+    <script src="https://cdn.jsdelivr.net/npm/viem@2.30.0/dist/index.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; margin-bottom: 30px; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #0052ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background: #0040cc; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            color: #2e7d32;
+        }
+        .error {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 RefBoom Deployer</h1>
+        
+        <select id="network">
+            <option value="baseSepolia">Base Sepolia</option>
+            <option value="base">Base Mainnet</option>
+        </select>
+        
+        <input type="text" id="usdcAddress" placeholder="USDC Address" 
+               value="0x036CbD53842c5426634e7929541eC2318f3dCF7e">
+        <input type="text" id="vrfCoordinator" placeholder="VRF Coordinator" 
+               value="0x5C210eF41CD1a72de73bF76eC39637bB0d3d7BEE">
+        <input type="text" id="keyHash" placeholder="Key Hash" 
+               value="0x9e1344a1247c8a1785d0a4681a27152bffdb43666ae5bf7d14d24a5efd44bf71">
+        <input type="number" id="subscriptionId" placeholder="Subscription ID" value="1">
+        
+        <button onclick="connectWallet()">Connect Wallet</button>
+        <button onclick="deploy()" id="deployBtn" disabled>Deploy Contract</button>
+        
+        <div id="status"></div>
+    </div>
+
+    <script type="module">
+        const networks = {
+            baseSepolia: {
+                chainId: 84532n,
+                rpcUrl: 'https://sepolia.base.org',
+                name: 'Base Sepolia'
+            },
+            base: {
+                chainId: 8453n,
+                rpcUrl: 'https://mainnet.base.org',
+                name: 'Base Mainnet'
+            }
+        };
+
+        let walletClient, publicClient;
+        let currentAccount;
+
+        window.connectWallet = async () => {
+            try {
+                const network = networks[document.getElementById('network').value];
+                
+                if (!window.ethereum) {
+                    throw new Error('MetaMask not found!');
+                }
+
+                // Request account
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                currentAccount = accounts[0];
+
+                // Check network
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (parseInt(chainId, 16) !== Number(network.chainId)) {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: `0x${network.chainId.toString(16)}` }],
+                    });
+                }
+
+                // Setup clients
+                walletClient = viem.createWalletClient({
+                    account: currentAccount,
+                    transport: viem.custom(window.ethereum)
+                });
+
+                publicClient = viem.createPublicClient({
+                    transport: viem.http(network.rpcUrl)
+                });
+
+                document.getElementById('status').innerHTML = 
+                    `<div class="status">✅ Connected: ${currentAccount.slice(0,6)}...${currentAccount.slice(-4)}</div>`;
+                document.getElementById('deployBtn').disabled = false;
+            } catch (error) {
+                document.getElementById('status').innerHTML = 
+                    `<div class="status error">❌ ${error.message}</div>`;
+            }
+        };
+
+        window.deploy = async () => {
+            try {
+                if (!walletClient) {
+                    throw new Error('Please connect wallet first!');
+                }
+
+                document.getElementById('status').innerHTML = 
+                    `<div class="status">⏳ Fetching contract bytecode...</div>`;
+
+                // You'll need to paste the compiled bytecode here
+                // For now, showing the flow
+                const bytecode = 'YOUR_CONTRACT_BYTECODE_HERE';
+                
+                const usdcAddress = document.getElementById('usdcAddress').value;
+                const vrfCoordinator = document.getElementById('vrfCoordinator').value;
+                const keyHash = document.getElementById('keyHash').value;
+                const subscriptionId = BigInt(document.getElementById('subscriptionId').value);
+
+                document.getElementById('status').innerHTML = 
+                    `<div class="status">⏳ Deploying contract...</div>`;
+
+                const hash = await walletClient.deployContract({
+                    abi: [], // Add ABI here
+                    bytecode,
+                    args: [usdcAddress, vrfCoordinator, keyHash, subscriptionId]
+                });
+
+                const txReceipt = await publicClient.waitForTransactionReceipt({ hash });
+
+                document.getElementById('status').innerHTML = 
+                    `<div class="status">✅ Deployed at: <code>${txReceipt.contractAddress}</code></div>`;
+            } catch (error) {
+                document.getElementById('status').innerHTML = 
+                    `<div class="status error">❌ ${error.message}</div>`;
+                console.error(error);
+            }
+        };
+    </script>
+</body>
+</html>
+

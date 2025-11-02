@@ -1,0 +1,22 @@
+{
+  "name": "refboom",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "deploy:contract": "turbo run deploy --filter=contracts",
+    "start": "turbo run start --filter=frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "hardhat": "^3.0.10",
+    "ts-node": "^10.9.2",
+    "turbo": "^2.6.0",
+    "typescript": "^5.9.3"
+  }
+}
