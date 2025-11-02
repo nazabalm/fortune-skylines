@@ -1,13 +1,13 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
-import { base, baseSepolia } from 'wagmi/chains'
+import { base } from 'wagmi/chains'
 import { http } from 'wagmi'
 
 export const config = getDefaultConfig({
   appName: 'FortuneSkylines Lottery',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'default',
-  chains: [baseSepolia], // Using Base Sepolia for testing (Chainlink VRF available)
+  chains: [base], // Using Base Sepolia for testing (Chainlink VRF available)
   transports: {
-    [baseSepolia.id]: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'),
+    [base.id]: http(process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org'),
   },
   ssr: true,
 })

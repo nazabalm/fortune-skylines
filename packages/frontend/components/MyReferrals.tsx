@@ -48,7 +48,9 @@ export function MyReferrals() {
       setIsLoading(true)
       try {
         const blockNumber = await publicClient.getBlockNumber()
-        const fromBlock = blockNumber > 50000n ? blockNumber - 50000n : 0n
+        // Limit to 5000 blocks to work with free RPCs (1RPC has 10k limit)
+        const maxBlocks = 5000n
+        const fromBlock = blockNumber > maxBlocks ? blockNumber - maxBlocks : 0n
 
         const joinedEventAbi = parseAbiItem('event Joined(address indexed user, address indexed referrer)')
         
