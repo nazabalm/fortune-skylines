@@ -16,6 +16,7 @@ import { useSearchParams } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { formatEther } from 'viem'
 import { WinnerAnnouncement } from '@/components/WinnerAnnouncement'
+import { RecentUsers } from '@/components/RecentUsers'
 import { useChainId } from 'wagmi'
 
 function AnimatedCounter({ value, decimals = 2 }: { value: number; decimals?: number }) {
@@ -383,6 +384,7 @@ function LotteryContent() {
           {/* Right Column */}
           <div className="space-y-6">
             <StatsGrid />
+            <RecentUsers />
           </div>
         </div>
       </main>
