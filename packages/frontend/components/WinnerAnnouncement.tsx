@@ -23,6 +23,12 @@ export function WinnerAnnouncement() {
   }
 
   useEffect(() => {
+    if (winnerEvent) {
+      console.log('[WinnerAnnouncement] winnerEvent:', winnerEvent)
+    }
+  }, [winnerEvent])
+
+  useEffect(() => {
     if (winnerSelected && winner && !hasPlayed) {
       // Play confetti animation
       confetti({
