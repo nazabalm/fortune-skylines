@@ -89,33 +89,33 @@ function CountdownTimer() {
   }
   
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-center gap-2 sm:gap-4">
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+        <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {timeLeft.days}
         </div>
-        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Days</div>
+        <div className="text-[10px] sm:text-xs text-indigo-300/70 uppercase tracking-wide">Days</div>
       </div>
-      <div className="text-3xl text-indigo-400">:</div>
+      <div className="text-2xl sm:text-3xl text-indigo-400">:</div>
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+        <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {String(timeLeft.hours).padStart(2, '0')}
         </div>
-        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Hours</div>
+        <div className="text-[10px] sm:text-xs text-indigo-300/70 uppercase tracking-wide">Hours</div>
       </div>
-      <div className="text-3xl text-indigo-400">:</div>
+      <div className="text-2xl sm:text-3xl text-indigo-400">:</div>
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+        <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {String(timeLeft.minutes).padStart(2, '0')}
         </div>
-        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Minutes</div>
+        <div className="text-[10px] sm:text-xs text-indigo-300/70 uppercase tracking-wide">Minutes</div>
       </div>
-      <div className="text-3xl text-indigo-400">:</div>
+      <div className="text-2xl sm:text-3xl text-indigo-400">:</div>
       <div className="flex flex-col items-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+        <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           {String(timeLeft.seconds).padStart(2, '0')}
         </div>
-        <div className="text-xs text-indigo-300/70 uppercase tracking-wide">Seconds</div>
+        <div className="text-[10px] sm:text-xs text-indigo-300/70 uppercase tracking-wide">Seconds</div>
       </div>
     </div>
   )
@@ -128,18 +128,18 @@ function PrizePoolDisplay() {
     <Card className="border border-indigo-500/20 bg-gradient-to-br from-slate-900/50 to-indigo-950/30 backdrop-blur-sm shadow-2xl shadow-indigo-500/10">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Trophy className="h-8 w-8 text-yellow-400" />
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Prize Pool</CardTitle>
+          <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400 flex-shrink-0" />
+          <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Prize Pool</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+      <CardContent className="space-y-4 sm:space-y-6">
+        <div className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
           $<AnimatedCounter value={Number(prizePool)} />
         </div>
         <div className="space-y-3">
           <div className="flex items-center gap-2 mb-2">
-            <Clock className="h-5 w-5 text-indigo-400" />
-            <span className="text-sm font-medium text-indigo-300">Winner Selection: January 1st</span>
+            <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-400 flex-shrink-0" />
+            <span className="text-xs sm:text-sm font-medium text-indigo-300">Winner Selection: January 1st</span>
           </div>
           <CountdownTimer />
         </div>
@@ -429,14 +429,18 @@ function LotteryContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
       {/* Header */}
       <header className="border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Trophy className="h-8 w-8 text-yellow-400" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              FortuneSkylines
-            </h1>
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400 flex-shrink-0" />
+              <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent whitespace-nowrap">
+                FortuneSkylines
+              </h1>
+            </div>
+            <div className="flex-shrink-0 w-full sm:w-auto sm:ml-auto">
+              <ConnectButton />
+            </div>
           </div>
-          <ConnectButton />
         </div>
       </header>
 
