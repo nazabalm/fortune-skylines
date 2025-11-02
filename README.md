@@ -172,6 +172,35 @@ Open http://localhost:3000 🎉
 - Ensure Chainlink VRF subscription is funded with LINK
 - First user must use contract owner as referrer
 
+## 🌐 Deploy to Vercel
+
+The frontend is configured for easy deployment to Vercel:
+
+1. **Push to GitHub**:
+   ```bash
+   git push origin main
+   ```
+
+2. **Import to Vercel**:
+   - Go to https://vercel.com
+   - Click "Add New Project"
+   - Import your GitHub repository
+   - Vercel will auto-detect the monorepo setup via `vercel.json`
+
+3. **Set Environment Variables**:
+   In Vercel dashboard, add these under Settings → Environment Variables:
+   ```
+   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id_here
+   NEXT_PUBLIC_REFBOOM_BASE_SEPOLIA=your_contract_address
+   NEXT_PUBLIC_REFBOOM_BASE=your_mainnet_contract_address
+   ```
+
+4. **Deploy**:
+   - Click "Deploy"
+   - Your FortuneSkylines lottery will be live!
+
+The `vercel.json` configuration ensures only the frontend is built, avoiding Hardhat dependency conflicts.
+
 ## 📄 License
 
 ISC
