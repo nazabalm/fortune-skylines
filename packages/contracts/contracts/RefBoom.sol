@@ -10,10 +10,10 @@ import "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 contract RefBoom is VRFConsumerBaseV2Plus {
     IERC20 public usdc;
 
-    uint256 public constant ENTRY_FEE = 1 * 10 ** 3; // 0.001 USDC (for testing on Base Sepolia)
-    uint256 public constant REFERRAL_REWARD = 5 * 10 ** 2; // 0.0005 USDC
-    uint256 public constant POOL_CUT = 4 * 10 ** 2; // 0.0004 USDC
-    uint256 public constant PLATFORM_FEE = 1 * 10 ** 2; // 0.0001 USDC
+    uint256 public constant ENTRY_FEE = 100 * 10 ** 6; // 100 USDC (6 decimals)
+    uint256 public constant REFERRAL_REWARD = 50 * 10 ** 6; // 50 USDC
+    uint256 public constant POOL_CUT = 40 * 10 ** 6; // 40 USDC
+    uint256 public constant PLATFORM_FEE = 10 * 10 ** 6; // 10 USDC
     uint256 public constant MAX_PER_DAY = 20;
 
     mapping(address => bool) public hasJoined;

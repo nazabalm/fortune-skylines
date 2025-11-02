@@ -227,7 +227,7 @@ function JoinForm() {
     <Card>
       <CardHeader>
         <CardTitle>Join the Lottery</CardTitle>
-        <CardDescription>Enter with 0.001 USDC and start earning rewards</CardDescription>
+        <CardDescription>Enter with 100 USDC and start earning rewards</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
@@ -249,7 +249,7 @@ function JoinForm() {
         {needsApproval ? (
           <div className="space-y-3">
             <p className="text-xs text-muted-foreground bg-muted p-3 rounded-lg">
-              <strong>Note:</strong> You need to approve the 0.001 USDC entry fee. This is required before joining.
+              <strong>Note:</strong> You need to approve the 100 USDC entry fee. This is required before joining.
             </p>
             <Button 
               onClick={() => handleApproveAndJoin()} 
@@ -265,7 +265,7 @@ function JoinForm() {
               ) : (
                 <>
                   <Gift className="mr-2 h-4 w-4" />
-                  Approve & Join (0.001 USDC)
+                  Approve & Join (100 USDC)
                 </>
               )}
             </Button>
@@ -285,7 +285,7 @@ function JoinForm() {
             ) : (
               <>
                 <Gift className="mr-2 h-4 w-4" />
-                Join Lottery (0.001 USDC)
+                Join Lottery (100 USDC)
               </>
             )}
           </Button>
@@ -354,7 +354,7 @@ function HowItWorks() {
             </div>
             <div>
               <h4 className="font-semibold">Enter the Lottery</h4>
-              <p className="text-sm text-muted-foreground">Pay 0.001 USDC to join</p>
+              <p className="text-sm text-muted-foreground">Pay 100 USDC to join</p>
             </div>
           </div>
           <div className="flex gap-4">
@@ -364,7 +364,7 @@ function HowItWorks() {
             <div>
               <h4 className="font-semibold">Refer Friends</h4>
               <p className="text-sm text-muted-foreground">
-                Get 0.0005 USDC per successful referral (max 20/day)
+                Get 50 USDC per successful referral (max 20/day)
               </p>
             </div>
           </div>
@@ -383,9 +383,9 @@ function HowItWorks() {
         <div className="mt-6 p-4 bg-muted rounded-lg">
           <p className="text-sm font-medium mb-2">Prize Distribution:</p>
           <div className="text-xs space-y-1 text-muted-foreground">
-            <div>🎯 0.0004 USDC → Prize Pool</div>
-            <div>💸 0.0005 USDC → Referrer (You!)</div>
-            <div>🔧 0.0001 USDC → Platform Fee</div>
+            <div>🎯 40 USDC → Prize Pool</div>
+            <div>💸 50 USDC → Referrer (You!)</div>
+            <div>🔧 10 USDC → Platform Fee</div>
           </div>
         </div>
       </CardContent>
@@ -395,7 +395,7 @@ function HowItWorks() {
 
 function LotteryContent() {
   const chainId = useChainId()
-  const supportedChains = [84532, 8453] // Base Sepolia, Base Mainnet
+  const supportedChains = [8453] // Base Mainnet only
   const { isConnected } = useAccount()
   const isSupportedChain = supportedChains.includes(chainId)
 
@@ -407,15 +407,14 @@ function LotteryContent() {
           <CardHeader>
             <CardTitle className="text-red-800 dark:text-red-200">⚠️ Unsupported Network</CardTitle>
             <CardDescription className="text-red-700 dark:text-red-300">
-              Please switch to Base or Base Sepolia
+              Please switch to Base Mainnet
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-red-700 dark:text-red-300">
-              FortuneSkylines is currently only available on Base networks. Please switch your wallet to:
+              FortuneSkylines is only available on Base Mainnet. Please switch your wallet to:
             </p>
             <ul className="text-sm text-red-700 dark:text-red-300 space-y-2">
-              <li>• Base Sepolia (Testnet)</li>
               <li>• Base (Mainnet)</li>
             </ul>
             <ConnectButton />

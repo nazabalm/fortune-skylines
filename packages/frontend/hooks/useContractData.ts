@@ -7,9 +7,9 @@ import { formatUnits } from 'viem'
 export function useContractData() {
   const { data: blockNumber } = useBlockNumber({ watch: true })
   let chainId = useChainId()
-  // Default to Base Sepolia if chain ID is unsupported or 0
-  if (!chainId || chainId === 0 || ![84532, 8453].includes(chainId)) {
-    chainId = 84532 // Base Sepolia
+  // Default to Base mainnet if chain ID is unsupported or 0
+  if (!chainId || chainId === 0 || ![8453].includes(chainId)) {
+    chainId = 8453 // Base mainnet
   }
   const contractAddresses = getContractAddress(chainId)
   const isDeployed = isContractDeployed(contractAddresses.refBoom)

@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast'
 import { useState, useEffect } from 'react'
 import { parseContractError } from '@/lib/errorHelpers'
 
-const ENTRY_FEE = parseUnits('0.001', 6) // 0.001 USDC (for testing)
+const ENTRY_FEE = parseUnits('100', 6) // 100 USDC (production)
 
 export function useJoinLottery() {
   const { address } = useAccount()
@@ -120,7 +120,7 @@ export function useJoinLottery() {
     
     // Check USDC balance
     if (usdcBalance < ENTRY_FEE) {
-      toast.error('❌ Insufficient USDC balance. You need at least 0.001 USDC to join.')
+      toast.error('❌ Insufficient USDC balance. You need at least 100 USDC to join.')
       return
     }
     
@@ -152,7 +152,7 @@ export function useJoinLottery() {
     
     // Check USDC balance
     if (usdcBalance < ENTRY_FEE) {
-      toast.error('❌ Insufficient USDC balance. You need at least 0.001 USDC to join.')
+      toast.error('❌ Insufficient USDC balance. You need at least 100 USDC to join.')
       return
     }
     
