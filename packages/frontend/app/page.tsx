@@ -507,7 +507,26 @@ function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-yellow-400" />
+            <div className="h-5 w-5 flex-shrink-0 relative">
+              <svg viewBox="0 0 64 64" className="w-full h-full">
+                <defs>
+                  <linearGradient id="trophyGradientFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#8B5CF6" />
+                    <stop offset="50%" stopColor="#3B82F6" />
+                    <stop offset="100%" stopColor="#6366F1" />
+                  </linearGradient>
+                  <linearGradient id="baseGradientFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#A78BFA" />
+                    <stop offset="100%" stopColor="#818CF8" />
+                  </linearGradient>
+                </defs>
+                <circle cx="32" cy="32" r="30" fill="url(#baseGradientFooter)" opacity="0.3"/>
+                <path d="M28 18 L32 16 L36 18 L36 24 C36 26 38 28 40 28 L40 32 C40 38 35 42 32 42 C29 42 24 38 24 32 L24 28 C26 28 28 26 28 24 Z" fill="url(#trophyGradientFooter)"/>
+                <rect x="20" y="42" width="24" height="6" rx="2" fill="url(#trophyGradientFooter)"/>
+                <path d="M32 26 L32.8 28.6 L35.4 28.6 L33.3 30.2 L34.1 32.8 L32 31.2 L29.9 32.8 L30.7 30.2 L28.6 28.6 L31.2 28.6 Z" fill="#FCD34D"/>
+                <path d="M32 36 Q32 36 32 38 Q32 40 30.5 40 Q32 40 32 42 M28 36 L36 36 M28 42 L36 42" stroke="#10B981" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
             <span className="text-sm text-muted-foreground">FortuneSkylines</span>
           </div>
           <div className="flex items-center gap-4">
