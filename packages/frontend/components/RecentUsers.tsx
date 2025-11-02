@@ -88,11 +88,11 @@ export function RecentUsers() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-xs font-bold text-muted-foreground">#{index + 1}</span>
                       <code className="text-sm font-mono text-foreground truncate">
-                        {formatAddress(event.user)}
+                        {event.user ? formatAddress(event.user) : 'Unknown'}
                       </code>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(event.timestamp, { addSuffix: true })}
+                      {event.timestamp ? formatDistanceToNow(event.timestamp, { addSuffix: true }) : 'Unknown time'}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
@@ -125,7 +125,7 @@ export function RecentUsers() {
                     )}
                   </div>
                 </div>
-                {expandedUser === event.user && (
+                {expandedUser === event.user && event.referrer && (
                   <div className="p-3 bg-background border-t border-border/50">
                     <p className="text-xs text-muted-foreground mb-2">
                       Referred by: <code className="font-mono">{formatAddress(event.referrer)}</code>
