@@ -151,6 +151,31 @@ const html = `<!DOCTYPE html>
         const BYTECODE = '${artifact.bytecode}';
         const ABI = ${JSON.stringify(artifact.abi)};
         
+        // Network configurations
+        const networkConfigs = {
+            baseSepolia: {
+                usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+                vrf: '0x5C210eF41CD1a72de73bF76eC39637bB0d3d7BEE',
+                keyHash: '0x9e1344a1247c8a1785d0a4681a27152bffdb43666ae5bf7d14d24a5efd44bf71'
+            },
+            base: {
+                usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                vrf: '0x08e9C878321F3C8e28D8Cb65f1F02d62437BC984', // Placeholder - Chainlink VRF not supported on Base mainnet yet
+                keyHash: '0x9e1344a1247c8a1785d0a4681a27152bffdb43666ae5bf7d14d24a5efd44bf71' // Placeholder
+            }
+        };
+        
+        // Update form when network changes
+        document.getElementById('network').addEventListener('change', function() {
+            const network = this.value;
+            const config = networkConfigs[network];
+            if (config) {
+                document.getElementById('usdcAddress').value = config.usdc;
+                document.getElementById('vrfCoordinator').value = config.vrf;
+                document.getElementById('keyHash').value = config.keyHash;
+            }
+        });
+        
         const baseSepoliaChain = defineChain({
             id: 84532,
             name: 'Base Sepolia',
