@@ -14,7 +14,7 @@ import { Trophy, Users, TrendingUp, Gift, Copy, CheckCircle2, Loader2, Clock } f
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { toast } from 'react-hot-toast'
-import { formatEther } from 'viem'
+import { formatEther, formatUnits, parseUnits } from 'viem'
 import { WinnerAnnouncement } from '@/components/WinnerAnnouncement'
 import { RecentUsers } from '@/components/RecentUsers'
 import { MyReferrals } from '@/components/MyReferrals'
@@ -150,7 +150,8 @@ function PrizePoolDisplay() {
 
 function JoinForm() {
   const { address, hasJoined } = useUserStatus()
-  const { needsApproval, handleApprove, handleJoin, handleApproveAndJoin, isApproving, isJoining, setReferrer, referrer } = useJoinLottery()
+  const { needsApproval, handleApprove, handleJoin, handleApproveAndJoin, isApproving, isJoining, setReferrer, referrer, entryFee } = useJoinLottery()
+  const { totalUsers } = useContractData()
   const searchParams = useSearchParams()
   const [ownerReferrer, setOwnerReferrer] = useState<string>('')
   const [copied, setCopied] = useState(false)
@@ -222,14 +223,27 @@ function JoinForm() {
   }
 
   const loading = isApproving || isJoining
+  const entryFeeDisplay = formatUnits(entryFee, 6)
+  const isGenesisDiscount = entryFee < parseUnits('100', 6)
+  const spotsRemaining = 50 - totalUsers
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Join the Lottery</CardTitle>
-        <CardDescription>Enter with 100 USDC and start earning rewards</CardDescription>
+        <CardDescription>Enter with {entryFeeDisplay} USDC and start earning rewards</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {isGenesisDiscount && spotsRemaining > 0 && (
+          <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-3">
+            <div className="flex items-center gap-2">
+              <Badge className="bg-green-600">🎉 25% OFF</Badge>
+              <span className="text-sm text-green-300">
+                Genesis discount! Only {spotsRemaining} spots left at {entryFeeDisplay} USDC
+              </span>
+            </div>
+          </div>
+        )}
         <div>
           <label className="text-sm font-medium mb-2 block">
             Referrer Address (Required)
@@ -249,7 +263,7 @@ function JoinForm() {
         {needsApproval ? (
           <div className="space-y-3">
             <p className="text-xs text-muted-foreground bg-muted p-3 rounded-lg">
-              <strong>Note:</strong> You need to approve the 100 USDC entry fee. This is required before joining.
+              <strong>Note:</strong> You need to approve the {entryFeeDisplay} USDC entry fee. This is required before joining.
             </p>
             <Button 
               onClick={() => handleApproveAndJoin()} 
@@ -265,7 +279,7 @@ function JoinForm() {
               ) : (
                 <>
                   <Gift className="mr-2 h-4 w-4" />
-                  Approve & Join (100 USDC)
+                  Approve & Join ({entryFeeDisplay} USDC)
                 </>
               )}
             </Button>
@@ -285,7 +299,7 @@ function JoinForm() {
             ) : (
               <>
                 <Gift className="mr-2 h-4 w-4" />
-                Join Lottery (100 USDC)
+                Join Lottery ({entryFeeDisplay} USDC)
               </>
             )}
           </Button>

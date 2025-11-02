@@ -3,12 +3,13 @@
 import { useWriteContract, useReadContract, useWaitForTransactionReceipt, useChainId } from 'wagmi'
 import { useAccount, usePublicClient } from 'wagmi'
 import { REFBOOM_ABI, USDC_ABI, getContractAddress } from '@/lib/contracts'
-import { parseUnits } from 'viem'
+import { parseUnits, formatUnits } from 'viem'
 import { toast } from 'react-hot-toast'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { parseContractError } from '@/lib/errorHelpers'
 
 const ENTRY_FEE = parseUnits('100', 6) // 100 USDC (production)
+const GENESIS_ENTRY_FEE = parseUnits('75', 6) // 75 USDC (25% discount)
 
 export function useJoinLottery() {
   const { address } = useAccount()
@@ -16,6 +17,34 @@ export function useJoinLottery() {
   const chainId = useChainId()
   const { refBoom, usdc } = getContractAddress(chainId)
   const [referrer, setReferrer] = useState<`0x${string}` | ''>('')
+
+  // Fetch contract constants
+  const { data: contractGenesisReferrer } = useReadContract({
+    address: refBoom,
+    abi: REFBOOM_ABI,
+    functionName: 'genesisReferrer',
+    query: {
+      enabled: !!refBoom,
+    },
+  })
+
+  const { data: totalUsers = 0n } = useReadContract({
+    address: refBoom,
+    abi: REFBOOM_ABI,
+    functionName: 'totalUsers',
+    query: {
+      enabled: !!refBoom,
+      refetchInterval: 5000,
+    },
+  })
+
+  // Calculate entry fee based on genesis referrer eligibility
+  const entryFee = useMemo(() => {
+    if (!referrer || !contractGenesisReferrer) return ENTRY_FEE
+    const isGenesisReferrer = referrer.toLowerCase() === contractGenesisReferrer.toLowerCase()
+    const isFirst50 = totalUsers < 50n
+    return isGenesisReferrer && isFirst50 ? GENESIS_ENTRY_FEE : ENTRY_FEE
+  }, [referrer, contractGenesisReferrer, totalUsers])
 
   // Check USDC allowance
   const { data: allowance = 0n } = useReadContract({
@@ -39,7 +68,7 @@ export function useJoinLottery() {
     },
   })
 
-  const needsApproval = allowance < ENTRY_FEE
+  const needsApproval = allowance < entryFee
 
   // USDC Approval
   const {
@@ -101,7 +130,7 @@ export function useJoinLottery() {
       address: usdc,
       abi: USDC_ABI,
       functionName: 'approve',
-      args: [refBoom, ENTRY_FEE],
+      args: [refBoom, entryFee],
     })
   }
 
@@ -119,8 +148,9 @@ export function useJoinLottery() {
     }
     
     // Check USDC balance
-    if (usdcBalance < ENTRY_FEE) {
-      toast.error('❌ Insufficient USDC balance. You need at least 100 USDC to join.')
+    if (usdcBalance < entryFee) {
+      const feeDisplay = formatUnits(entryFee, 6)
+      toast.error(`❌ Insufficient USDC balance. You need at least ${feeDisplay} USDC to join.`)
       return
     }
     
@@ -151,8 +181,9 @@ export function useJoinLottery() {
     }
     
     // Check USDC balance
-    if (usdcBalance < ENTRY_FEE) {
-      toast.error('❌ Insufficient USDC balance. You need at least 100 USDC to join.')
+    if (usdcBalance < entryFee) {
+      const feeDisplay = formatUnits(entryFee, 6)
+      toast.error(`❌ Insufficient USDC balance. You need at least ${feeDisplay} USDC to join.`)
       return
     }
     
@@ -163,7 +194,7 @@ export function useJoinLottery() {
         address: usdc,
         abi: USDC_ABI,
         functionName: 'approve',
-        args: [refBoom, ENTRY_FEE],
+        args: [refBoom, entryFee],
       })
       
       toast.success('Approval sent! Waiting for confirmation...', { id: 'approving' })
@@ -196,5 +227,6 @@ export function useJoinLottery() {
     isJoining: isJoining || isWaitingJoin,
     setReferrer,
     referrer,
+    entryFee,
   }
 }
