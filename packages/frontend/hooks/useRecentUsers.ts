@@ -66,9 +66,9 @@ export function useRecentUsers(limit: number = 10) {
     const loadHistoricalEvents = async () => {
       try {
         console.log('[RecentUsers] Loading historical events from:', contractAddresses.refBoom)
-        // Get events from the last 1000 blocks (~4 hours on Base)
+        // Get events from contract creation (0 means start from genesis)
         const blockNumber = await publicClient.getBlockNumber()
-        const fromBlock = blockNumber > 1000n ? blockNumber - 1000n : 0n
+        const fromBlock = 0n  // Start from beginning to catch all events
         console.log('[RecentUsers] Querying blocks:', fromBlock, 'to', blockNumber)
 
         // Use parseAbiItem to create the event filter
