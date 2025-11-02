@@ -10,12 +10,17 @@ import { useEffect, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 import { parseAbiItem } from 'viem'
 
+interface ReferralInfo {
+  user: string
+  transactionHash: string
+}
+
 export function MyReferrals() {
   const { address } = useAccount()
   const chainId = useChainId()
   const publicClient = usePublicClient()
   const contractAddresses = getContractAddress(chainId)
-  const [myReferrals, setMyReferrals] = useState<string[]>([])
+  const [myReferrals, setMyReferrals] = useState<ReferralInfo[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   // Get today's referral count
@@ -57,9 +62,12 @@ export function MyReferrals() {
           },
         })
 
-        const referredUsers = logs
-          .map(log => log.args.user as string)
-          .filter(user => user !== '0x0000000000000000000000000000000000000000')
+        const referredUsers: ReferralInfo[] = logs
+          .map(log => ({
+            user: log.args.user as string,
+            transactionHash: log.transactionHash,
+          }))
+          .filter(info => info.user !== '0x0000000000000000000000000000000000000000')
 
         setMyReferrals(referredUsers)
       } catch (error) {
@@ -72,11 +80,18 @@ export function MyReferrals() {
     loadMyReferrals()
   }, [address, publicClient, contractAddresses.refBoom])
 
-  const getExplorerUrl = (address: string) => {
+  const getExplorerUrl = (txHash?: string, address?: string) => {
     const explorerBase = chainId === 8453 
       ? 'https://basescan.org' 
       : 'https://sepolia.basescan.org'
-    return `${explorerBase}/address/${address}`
+    
+    if (txHash) {
+      return `${explorerBase}/tx/${txHash}`
+    }
+    if (address) {
+      return `${explorerBase}/address/${address}`
+    }
+    return explorerBase
   }
 
   const formatAddress = (addr: string) => {
@@ -128,19 +143,19 @@ export function MyReferrals() {
           </div>
         ) : (
           <div className="space-y-2">
-            {myReferrals.map((user, index) => (
+            {myReferrals.map((referral, index) => (
               <div
-                key={user}
+                key={referral.user}
                 className="flex items-center justify-between p-2 bg-muted/50 rounded-lg border border-border/50"
               >
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-muted-foreground w-6">#{index + 1}</span>
-                  <code className="text-sm font-mono text-foreground">{formatAddress(user)}</code>
+                  <code className="text-sm font-mono text-foreground">{formatAddress(referral.user)}</code>
                 </div>
                 <button
-                  onClick={() => window.open(getExplorerUrl(user), '_blank')}
+                  onClick={() => window.open(getExplorerUrl(referral.transactionHash), '_blank')}
                   className="opacity-50 hover:opacity-100 transition-opacity"
-                  title="View on BaseScan"
+                  title="View transaction on BaseScan"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </button>
