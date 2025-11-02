@@ -96,16 +96,18 @@ export function RecentUsers() {
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        window.open(getExplorerUrl(undefined, event.user), '_blank')
-                      }}
-                      className="opacity-50 hover:opacity-100 transition-opacity p-1"
-                      title="View on BaseScan"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                    </button>
+                    {event.transactionHash && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          window.open(getExplorerUrl(event.transactionHash), '_blank')
+                        }}
+                        className="opacity-50 hover:opacity-100 transition-opacity p-1"
+                        title="View transaction on BaseScan"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                      </button>
+                    )}
                     <button
                       onClick={(e) => {
                         e.stopPropagation()

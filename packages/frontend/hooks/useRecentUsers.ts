@@ -11,6 +11,7 @@ interface JoinedEvent {
   timestamp: Date
   address: `0x${string}`
   blockNumber?: bigint
+  transactionHash?: `0x${string}`
 }
 
 export function useRecentUsers(limit: number = 10) {
@@ -38,6 +39,7 @@ export function useRecentUsers(limit: number = 10) {
             timestamp: new Date(),
             address: contractAddresses.refBoom,
             blockNumber: log.blockNumber,
+            transactionHash: log.transactionHash,
           }
         })
         .filter((e) => e.user !== '0x0000000000000000000000000000000000000000')
@@ -95,6 +97,7 @@ export function useRecentUsers(limit: number = 10) {
               timestamp: new Date(Number(block.timestamp) * 1000),
               address: contractAddresses.refBoom,
               blockNumber: log.blockNumber,
+              transactionHash: log.transactionHash,
             }
           })
         )
