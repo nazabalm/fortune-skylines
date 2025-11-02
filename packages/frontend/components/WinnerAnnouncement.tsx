@@ -11,7 +11,7 @@ import { formatUnits } from 'viem'
 
 export function WinnerAnnouncement() {
   const { winnerSelected, winner, prizeAmount } = useContractData()
-  const { winnerEvent } = useWinnerEvent()
+  const { winnerEvent, isLoading: isLoadingEvent } = useWinnerEvent()
   const chainId = useChainId()
   const [hasPlayed, setHasPlayed] = useState(false)
 
@@ -23,10 +23,11 @@ export function WinnerAnnouncement() {
   }
 
   useEffect(() => {
+    console.log('[WinnerAnnouncement] State:', { winnerSelected, winner, prizeAmount, winnerEvent: !!winnerEvent, isLoadingEvent })
     if (winnerEvent) {
       console.log('[WinnerAnnouncement] winnerEvent:', winnerEvent)
     }
-  }, [winnerEvent])
+  }, [winnerSelected, winner, prizeAmount, winnerEvent, isLoadingEvent])
 
   useEffect(() => {
     if (winnerSelected && winner && !hasPlayed) {

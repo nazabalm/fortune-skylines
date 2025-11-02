@@ -25,6 +25,8 @@ export function useWinnerEvent() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    console.log('[useWinnerEvent] Effect triggered:', { publicClient: !!publicClient, isDeployed, contract: contractAddresses.refBoom })
+    
     if (!publicClient || !isDeployed) {
       setIsLoading(false)
       return
@@ -32,6 +34,8 @@ export function useWinnerEvent() {
 
     const fetchWinnerEvent = async () => {
       try {
+        console.log('[useWinnerEvent] Fetching logs from:', contractAddresses.refBoom)
+        
         // Get the most recent WinnerSelected event using the ABI
         const logs = await publicClient.getLogs({
           address: contractAddresses.refBoom,
@@ -41,6 +45,7 @@ export function useWinnerEvent() {
         })
 
         console.log('[useWinnerEvent] Found logs:', logs.length)
+        console.log('[useWinnerEvent] All logs:', logs)
 
         if (logs && logs.length > 0) {
           // Get the most recent event
@@ -57,6 +62,12 @@ export function useWinnerEvent() {
               blockNumber: latestLog.blockNumber,
             })
             console.log('[useWinnerEvent] Set winner event with tx:', latestLog.transactionHash)
+          } else {
+            console.warn('[useWinnerEvent] Latest log missing required fields:', {
+              hasTxHash: !!latestLog.transactionHash,
+              hasWinner: !!latestLog.args.winner,
+              log: latestLog
+            })
           }
         }
       } catch (error) {
