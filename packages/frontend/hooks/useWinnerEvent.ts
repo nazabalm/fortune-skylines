@@ -37,9 +37,10 @@ export function useWinnerEvent() {
         console.log('[useWinnerEvent] Fetching logs from:', contractAddresses.refBoom)
         
         // Get the most recent WinnerSelected event using the ABI
-        // Fetch from last 100k blocks to avoid range limit
+        // Limit to 5000 blocks to work with free RPCs (1RPC has 10k limit)
         const latestBlock = await publicClient.getBlockNumber()
-        const fromBlock = latestBlock > 100000n ? latestBlock - 100000n : 0n
+        const maxBlocks = 5000n
+        const fromBlock = latestBlock > maxBlocks ? latestBlock - maxBlocks : 0n
         
         const logs = await publicClient.getLogs({
           address: contractAddresses.refBoom,
