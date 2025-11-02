@@ -23,11 +23,11 @@ export function useRecentUsers(limit: number = 10) {
 
   // Watch for new Joined events in real-time
   useWatchContractEvent({
-    address: contractAddresses.refBoom,
+    address: isDeployed ? contractAddresses.refBoom : undefined,
     abi: REFBOOM_ABI,
     eventName: 'Joined',
-    enabled: isDeployed && !!publicClient,
     onLogs: (logs) => {
+      console.log('[RecentUsers] New Joined events detected:', logs.length)
       // Get the latest joined events
       const newEvents: JoinedEvent[] = logs
         .map((log) => {
@@ -66,13 +66,19 @@ export function useRecentUsers(limit: number = 10) {
     const loadHistoricalEvents = async () => {
       try {
         console.log('[RecentUsers] Loading historical events from:', contractAddresses.refBoom)
-        // Get events from contract creation (0 means start from genesis)
         const blockNumber = await publicClient.getBlockNumber()
-        const fromBlock = 0n  // Start from beginning to catch all events
-        console.log('[RecentUsers] Querying blocks:', fromBlock, 'to', blockNumber)
+        console.log('[RecentUsers] Current block:', blockNumber)
 
         // Use parseAbiItem to create the event filter
         const joinedEventAbi = parseAbiItem('event Joined(address indexed user, address indexed referrer)')
+        
+        // Query in batches to avoid RPC limits
+        const BATCH_SIZE = 5000n  // Query 5000 blocks at a time
+        let allLogs: typeof logs = []
+        
+        // Try to get events from a reasonable range
+        const fromBlock = blockNumber > 50000n ? blockNumber - 50000n : 0n
+        console.log('[RecentUsers] Querying blocks:', fromBlock, 'to', blockNumber)
         
         const logs = await publicClient.getLogs({
           address: contractAddresses.refBoom,
