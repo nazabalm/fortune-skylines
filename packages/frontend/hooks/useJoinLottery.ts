@@ -34,7 +34,7 @@ export function useJoinLottery() {
     functionName: 'totalUsers',
     query: {
       enabled: !!refBoom,
-      refetchInterval: 5000,
+      refetchInterval: 30000, // Poll every 30 seconds to avoid rate limits
     },
   })
 

@@ -19,7 +19,7 @@ export function useContractData() {
     abi: REFBOOM_ABI,
     functionName: 'getPrizePool',
     query: {
-      refetchInterval: 5000, // Poll every 5 seconds
+      refetchInterval: 30000, // Poll every 30 seconds to avoid rate limits
       enabled: isDeployed,
     },
   })
@@ -29,7 +29,7 @@ export function useContractData() {
     abi: REFBOOM_ABI,
     functionName: 'totalUsers',
     query: {
-      refetchInterval: 5000,
+      refetchInterval: 30000,
       enabled: isDeployed,
     },
   })
@@ -39,7 +39,7 @@ export function useContractData() {
     abi: REFBOOM_ABI,
     functionName: 'winnerSelected',
     query: {
-      refetchInterval: 5000,
+      refetchInterval: 30000,
       enabled: isDeployed,
     },
   })
@@ -49,7 +49,7 @@ export function useContractData() {
     abi: REFBOOM_ABI,
     functionName: 'winner',
     query: {
-      refetchInterval: 5000,
+      refetchInterval: 30000,
       enabled: winnerSelected && isDeployed,
     },
   })
@@ -59,7 +59,7 @@ export function useContractData() {
     abi: REFBOOM_ABI,
     functionName: 'prizeAmount',
     query: {
-      refetchInterval: 5000,
+      refetchInterval: 30000,
       enabled: winnerSelected && isDeployed,
     },
   })

@@ -38,7 +38,7 @@ export function MyReferrals() {
     args: address ? [address, BigInt(today)] : undefined,
     query: {
       enabled: !!address,
-      refetchInterval: 5000,
+      refetchInterval: 30000, // Poll every 30 seconds to avoid rate limits
     },
   });
 
