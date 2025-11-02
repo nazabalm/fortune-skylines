@@ -149,6 +149,11 @@ contract RefBoom is VRFConsumerBaseV2Plus {
         // Attempt transfer - use low-level call to prevent reverts
         bool success = usdc.transfer(selectedWinner, prizeToTransfer);
         
+        // If transfer succeeded, clear prizeAmount to prevent manual payment retry
+        if (success) {
+            prizeAmount = 0;
+        }
+        
         // Emit event regardless of transfer success (for tracking)
         emit WinnerSelected(selectedWinner, success ? prizeToTransfer : 0);
         
