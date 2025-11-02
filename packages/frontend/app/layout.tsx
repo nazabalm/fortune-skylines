@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RefBoom - Win Big with Referrals!",
+  title: "FortuneSkylines - Win Big with Referrals!",
   description: "Join the lottery, refer friends, and win the prize pool!",
 };
 

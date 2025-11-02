@@ -339,7 +339,7 @@ function LotteryContent() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-red-700 dark:text-red-300">
-              RefBoom is currently only available on Base networks. Please switch your wallet to:
+              FortuneSkylines is currently only available on Base networks. Please switch your wallet to:
             </p>
             <ul className="text-sm text-red-700 dark:text-red-300 space-y-2">
               <li>• Base Sepolia (Testnet)</li>
@@ -360,7 +360,7 @@ function LotteryContent() {
           <div className="flex items-center gap-2">
             <Trophy className="h-8 w-8 text-yellow-500" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              RefBoom
+              FortuneSkylines
             </h1>
           </div>
           <ConnectButton />
