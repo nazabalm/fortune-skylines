@@ -136,6 +136,9 @@ const html = `<!DOCTYPE html>
         <label>Subscription ID:</label>
         <input type="number" id="subscriptionId" value="1">
         
+        <label>Genesis Referrer Address:</label>
+        <input type="text" id="genesisReferrer" placeholder="0x...">
+        
         <button onclick="connectWallet()" id="connectBtn">Connect MetaMask</button>
         <button onclick="deploy()" id="deployBtn" disabled>🚀 Deploy RefBoom Contract</button>
         
@@ -266,6 +269,7 @@ const html = `<!DOCTYPE html>
                 const vrfCoordinator = document.getElementById('vrfCoordinator').value;
                 const keyHash = document.getElementById('keyHash').value;
                 const subIdInput = document.getElementById('subscriptionId').value;
+                const genesisReferrer = document.getElementById('genesisReferrer').value;
                 // Convert to BigInt for uint256
                 const subscriptionId = BigInt(subIdInput);
 
@@ -275,7 +279,7 @@ const html = `<!DOCTYPE html>
                 const hash = await walletClient.deployContract({
                     abi: ABI,
                     bytecode: BYTECODE,
-                    args: [usdcAddress, vrfCoordinator, keyHash, subscriptionId]
+                    args: [usdcAddress, vrfCoordinator, keyHash, subscriptionId, genesisReferrer]
                 });
 
                 document.getElementById('status').innerHTML = 
