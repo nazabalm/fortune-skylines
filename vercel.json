@@ -1,5 +1,5 @@
 {
-  "installCommand": "cd packages/frontend && npm install",
+  "installCommand": "cd packages/frontend && npm ci --production=false",
   "buildCommand": "cd packages/frontend && npm run build",
   "devCommand": "cd packages/frontend && npm run dev",
   "framework": "nextjs",
