@@ -531,13 +531,13 @@ function Footer() {
           </div>
           <div className="flex items-center gap-4">
             <a
-              href="https://twitter.com/Fortune_Skylines"
+              href="https://twitter.com/Fortune_Skyline"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <Twitter className="h-4 w-4" />
-              <span>@Fortune_Skylines</span>
+              <span>@Fortune_Skyline</span>
             </a>
           </div>
         </div>
